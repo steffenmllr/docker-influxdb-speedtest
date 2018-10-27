@@ -84,11 +84,11 @@ const messureAndWrite = async influx => {
 
     try {
         const fastResult = await getFastValues();
-        console.log(`${new Date()} - FAST:COM - DOWN: ${fastResult.download} ${fastResult.uploadUnit} // UP: ${fastResult.upload} ${fastResult.uploadUnit}`);
+        console.log(`${new Date()} - fast.com - DOWN: ${fastResult.download} ${fastResult.uploadUnit} // UP: ${fastResult.upload} ${fastResult.uploadUnit}`);
         await influx.writePoints([
             {
                 measurement: measurement,
-                tags: { provider: 'speedtest.net' },
+                tags: { provider: 'fast.com' },
                 fields: { upload: fastResult.upload, download: fastResult.download }
             }
         ]);
@@ -104,7 +104,6 @@ const messureAndWrite = async influx => {
 const main = () => {
     const influxHost = process.env['INFLUXDB_HOST'];
     const influxDB = process.env['INFLUXDB_DB'];
-    const influxTags = process.env['INFLUXDB_TAGS'];
 
     if (!influxHost) {
         throw Error('Please set INFLUXDB_HOST');
@@ -115,10 +114,6 @@ const main = () => {
     }
 
     const tags = ['provider'];
-    if (influxTags) {
-        influxTags.split(',').map(v => `${v}`.trim()).forEach(t => tags.push(t));
-    }
-
     console.log(`Starting up with '${influxHost}', writing to '${influxDB}', using tags: '${tags.join(', ')}'`);
 
     const influx = new Influx.InfluxDB({

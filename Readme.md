@@ -12,6 +12,5 @@
 docker run --restart=always -d \
 -e INFLUXDB_HOST=localhost \
 -e INFLUXDB_DB=speedtests \
--e INFLUXDB_TAGS=foo,bar \
 steffenmllr/docker-influxdb-speedtest
 ```
