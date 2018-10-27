@@ -1,0 +1,32 @@
+{
+  "name": "docker-graphite-speedtest",
+  "version": "1.0.0",
+  "description": "Get fast.com and speedtest.net speeds and publishs them to graphite",
+  "main": "index.js",
+  "keywords": [
+    "fast",
+    "speedtest",
+    "graphite"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/steffenmllr/docker-graphite-speedtest.git"
+  },
+  "author": "Steffe Müller",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/steffenmllr/docker-graphite-speedtest/issues"
+  },
+  "homepage": "https://github.com/steffenmllr/docker-graphite-speedtest#readme",
+  "devDependencies": {
+    "prettier": "^1.14.3"
+  },
+  "dependencies": {
+    "influx": "^5.0.7",
+    "puppeteer": "^1.9.0",
+    "speedtest-net": "^1.4.3"
+  }
+}
