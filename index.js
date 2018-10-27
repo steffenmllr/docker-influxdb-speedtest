@@ -1,7 +1,6 @@
 const speedTest = require('speedtest-net');
 const puppeteer = require('puppeteer');
 const Influx = require('influx');
-const mri = require('mri');
 
 const evaluateFast = async (page, cb, prev, hasUpload = false) => {
     try {
