@@ -22,6 +22,4 @@ COPY ./package.json ./package.json
 RUN npm install --only=prod
 COPY ./index.js ./index.js
 
-ENTRYPOINT ["node", "index.js"]
 CMD ["cron", "-f"]
-
