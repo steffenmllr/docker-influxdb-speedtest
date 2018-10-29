@@ -95,10 +95,6 @@ const messureAndWrite = async influx => {
     } catch (err) {
         console.warn('Could not get fast.com', err);
     }
-
-    setTimeout(async () => {
-        await messureAndWrite(influx);
-    }, 1000 * 60 * 30); // run every 30min
 };
 
 const main = () => {
@@ -133,7 +129,10 @@ const main = () => {
     });
 
     influx.createDatabase(influxDB).then(() => {
-        messureAndWrite(influx);
+        return messureAndWrite(influx);
+    }).then(() => {
+        console.log('All done!');
+        process.exit(0);
     }).catch(err => {
         throw Error('Cloud not create database');
         process.exit(1);

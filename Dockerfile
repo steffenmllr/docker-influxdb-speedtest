@@ -1,7 +1,7 @@
 FROM node:10
 
 RUN apt-get update -qq -y \
-&&  apt-get install -qq -y apt-transport-https unzip \
+&&  apt-get install -qq -y apt-transport-https unzip cron \
 &&  curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
 &&  echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main #Google-Chrome" > /etc/apt/sources.list.d/google-chrome.list \
 &&  apt-get update -qq -y \
@@ -11,9 +11,17 @@ RUN apt-get update -qq -y \
 &&  apt-get clean \
 &&  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ADD cron /etc/cron.d/speedtest-cron
+RUN chmod 0644 /etc/cron.d/speedtest-cron \
+    && crontab /etc/cron.d/speedtest-cron
+
+RUN mkdir app
+WORKDIR /app
 COPY ./package-lock.json ./package-lock.json
 COPY ./package.json ./package.json
 RUN npm install --only=prod
 COPY ./index.js ./index.js
 
-CMD ["node", "index.js"]
+ENTRYPOINT ["node", "index.js"]
+CMD ["cron", "-f"]
+
