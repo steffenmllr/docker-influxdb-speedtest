@@ -25,6 +25,7 @@
     "prettier": "^1.14.3"
   },
   "dependencies": {
+    "human-to-cron": "^0.3.1",
     "influx": "^5.0.7",
     "node-cron": "^2.0.3",
     "puppeteer": "^1.9.0",

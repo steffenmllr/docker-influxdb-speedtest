@@ -2,6 +2,7 @@ const speedTest = require('speedtest-net');
 const puppeteer = require('puppeteer');
 const Influx = require('influx');
 const cron = require('node-cron');
+const humanToCron = require('human-to-cron');
 
 const evaluateFast = async (page, cb, prev, hasUpload = false) => {
     try {
@@ -122,7 +123,7 @@ const main = async () => {
     }
     const tags = ['provider'];
     console.log(
-        `Starting up with '${influxHost}', writing to '${influxDB}', using interval: '${interval}'`
+        `Starting up with '${influxHost}', writing to '${influxDB}', using interval: '${humanToCron(interval)}'`
     );
 
     const influx = new Influx.InfluxDB({
@@ -148,7 +149,7 @@ const main = async () => {
         process.exit(1);
     }
 
-    cron.schedule(interval, () => messureAndWrite(influx));
+    cron.schedule(humanToCron(interval), () => messureAndWrite(influx));
 };
 
 main().catch(console.error)

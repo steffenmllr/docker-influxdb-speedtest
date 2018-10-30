@@ -12,6 +12,6 @@
 docker run --restart=always -d \
 -e INFLUXDB_HOST=localhost \
 -e INFLUXDB_DB=speedtests \
--e INTERVAL="*/30 * * * *" \
+-e INTERVAL="once every 5 minutes" \
 steffenmllr/docker-influxdb-speedtest
 ```
