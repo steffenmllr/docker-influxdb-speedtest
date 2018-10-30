@@ -1,6 +1,7 @@
 const speedTest = require('speedtest-net');
 const puppeteer = require('puppeteer');
 const Influx = require('influx');
+const cron = require('node-cron');
 
 const evaluateFast = async (page, cb, prev, hasUpload = false) => {
     try {
@@ -70,7 +71,9 @@ const messureAndWrite = async influx => {
     try {
         const stv = await getSpeedTestValues();
         const { speeds } = await getSpeedTestValues();
-        console.log(`${new Date()} - speedtest.com - DOWN: ${speeds.download} // UP: ${speeds.upload}`);
+        console.log(
+            `${new Date()} - speedtest.com - DOWN: ${speeds.download} // UP: ${speeds.upload}`
+        );
         await influx.writePoints([
             {
                 measurement: measurement,
@@ -84,7 +87,11 @@ const messureAndWrite = async influx => {
 
     try {
         const fastResult = await getFastValues();
-        console.log(`${new Date()} - fast.com - DOWN: ${fastResult.download} ${fastResult.uploadUnit} // UP: ${fastResult.upload} ${fastResult.uploadUnit}`);
+        console.log(
+            `${new Date()} - fast.com - DOWN: ${fastResult.download} ${
+                fastResult.uploadUnit
+            } // UP: ${fastResult.upload} ${fastResult.uploadUnit}`
+        );
         await influx.writePoints([
             {
                 measurement: measurement,
@@ -97,9 +104,10 @@ const messureAndWrite = async influx => {
     }
 };
 
-const main = () => {
+const main = async () => {
     const influxHost = process.env['INFLUXDB_HOST'];
     const influxDB = process.env['INFLUXDB_DB'];
+    const interval = process.env['INTERVAL'];
 
     if (!influxHost) {
         throw Error('Please set INFLUXDB_HOST');
@@ -109,8 +117,13 @@ const main = () => {
         throw Error('Please set INFLUXDB_DB');
     }
 
+    if (!interval) {
+        throw Error('Please set INTERVAL as cron');
+    }
     const tags = ['provider'];
-    console.log(`Starting up with '${influxHost}', writing to '${influxDB}', using tags: '${tags.join(', ')}'`);
+    console.log(
+        `Starting up with '${influxHost}', writing to '${influxDB}', using interval: '${interval}'`
+    );
 
     const influx = new Influx.InfluxDB({
         host: influxHost,
@@ -128,15 +141,14 @@ const main = () => {
         ]
     });
 
-    influx.createDatabase(influxDB).then(() => {
-        return messureAndWrite(influx);
-    }).then(() => {
-        console.log('All done!');
-        process.exit(0);
-    }).catch(err => {
-        throw Error('Cloud not create database');
+    try {
+        await influx.createDatabase(influxDB);
+    } catch (err) {
+        throw Error('Cloud not create database, please check credentials');
         process.exit(1);
-    })
+    }
+
+    cron.schedule(interval, () => messureAndWrite(influx));
 };
 
-main();
+main().catch(console.error)

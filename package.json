@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "influx": "^5.0.7",
+    "node-cron": "^2.0.3",
     "puppeteer": "^1.9.0",
     "speedtest-net": "^1.4.3"
   }

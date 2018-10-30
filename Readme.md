@@ -1,5 +1,5 @@
 # docker-influxdb-speedtest
-> Runs speedtest-net and fast.com speed test and pushs it into a influxdb, every 30mmin
+> Runs speedtest-net and fast.com speed test and pushs it into a influxdb
 
 ## Automated Build
 
@@ -12,5 +12,6 @@
 docker run --restart=always -d \
 -e INFLUXDB_HOST=localhost \
 -e INFLUXDB_DB=speedtests \
+-e INTERVAL="*/30 * * * *" \
 steffenmllr/docker-influxdb-speedtest
 ```
